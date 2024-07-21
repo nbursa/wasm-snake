@@ -25,11 +25,13 @@ impl std::fmt::Display for Position {
 pub struct Snake {
     body: Vec<Position>,
     direction: Direction,
+    width: i32,
+    height: i32,
 }
 
 #[wasm_bindgen]
 impl Snake {
-    pub fn new() -> Snake {
+    pub fn new(width: i32, height: i32) -> Snake {
         Snake {
             body: vec![
                 Position::new(2, 2),
@@ -37,6 +39,8 @@ impl Snake {
                 Position::new(2, 4),
             ],
             direction: Direction::Right,
+            width,
+            height,
         }
     }
 
@@ -70,6 +74,24 @@ impl Snake {
 
     pub fn get_direction(&self) -> Direction {
         self.direction
+    }
+
+    pub fn check_collision(&self) -> bool {
+        let head = self.body[0];
+
+        // Check for wall collisions
+        if head.x < 0 || head.y < 0 || head.x >= self.width || head.y >= self.height {
+            return true;
+        }
+
+        // Check for self-collisions
+        for part in &self.body[1..] {
+            if head == *part {
+                return true;
+            }
+        }
+
+        false
     }
 }
 

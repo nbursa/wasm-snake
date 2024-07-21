@@ -2,9 +2,9 @@ import init, { Snake, Direction } from '../wasm_snake/pkg/wasm_snake.js';
 
 async function run() {
     await init();
-    const snake = Snake.new();
     const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
     const ctx = canvas.getContext("2d")!;
+    const snake = Snake.new(canvas.width / 20, canvas.height / 20);
 
     console.log('Snake initialized:', snake.render());
 
@@ -52,31 +52,11 @@ async function run() {
         });
     }
 
-    function checkCollision(): boolean {
-        const snakeBody = snake.render().split("), (");
-        const head = snakeBody[0].replace(/[()]/g, '').split(', ').map(Number);
-        const [headX, headY] = head;
-
-        if (headX < 0 || headY < 0 || headX >= canvas.width / 20 || headY >= canvas.height / 20) {
-            return true;
-        }
-
-        for (let i = 1; i < snakeBody.length; i++) {
-            const part = snakeBody[i].replace(/[()]/g, '').split(', ').map(Number);
-            const [partX, partY] = part;
-            if (headX === partX && headY === partY) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     function update() {
         snake.update();
         console.log('Snake updated:', snake.render());
 
-        if (checkCollision()) {
+        if (snake.check_collision()) {
             console.log('Game Over');
             return;
         }

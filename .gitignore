@@ -1,4 +1,6 @@
 /wasm_snake/target
 /node_modules/
 /dist/
+/.history/
+/.git/
 
