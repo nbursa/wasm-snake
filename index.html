@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wasm Snake Game</title>
+    <style>
+        canvas { background: #000; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <script type="module">
+        import init, { Snake, Direction } from './pkg/wasm_snake.js';
+
+        async function run() {
+            await init();
+
+            const canvas = document.getElementById("gameCanvas");
+            const ctx = canvas.getContext("2d");
+            const snake = Snake.new();
+
+            document.addEventListener("keydown", (event) => {
+                switch (event.key) {
+                    case "ArrowUp":
+                        snake.change_direction(Direction.Up);
+                        break;
+                    case "ArrowDown":
+                        snake.change_direction(Direction.Down);
+                        break;
+                    case "ArrowLeft":
+                        snake.change_direction(Direction.Left);
+                        break;
+                    case "ArrowRight":
+                        snake.change_direction(Direction.Right);
+                        break;
+                }
+            });
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const snakeBody = snake.render().split(", ");
+                snakeBody.forEach(part => {
+                    const [x, y] = part.slice(1, -1).split(", ").map(Number);
+                    ctx.fillStyle = "lime";
+                    ctx.fillRect(x * 20, y * 20, 20, 20);
+                });
+            }
+
+            function gameLoop() {
+                snake.update();
+                draw();
+                setTimeout(gameLoop, 100);
+            }
+
+            gameLoop();
+        }
+
+        run();
+    </script>
+</body>
+</html>
+
