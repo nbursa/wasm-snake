@@ -1,23 +1,7 @@
-pub struct Position {
-    x: i32,
-    y: i32,
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+pub fn greet() -> String {
+    "Hello, wasm-snake!".to_string()
 }
-
-pub enum Direction {
-    Up,
-    Down,
-    Left,
-    Right
-}
-
-pub struct Snake {
-    body: Vec<Position>,
-    direction: Direction,
-}
-
-impl Snake {}
-
-impl Position {}
-
-mod tests {}
 
