@@ -56,7 +56,7 @@ async function run() {
 
     function update() {
         snake.update();
-        setStatus("Snaking");
+        setStatus("Playing");
 
         if (snake.check_collision()) {
 	    setStatus("Game Over");

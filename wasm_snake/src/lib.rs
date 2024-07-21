@@ -49,14 +49,23 @@ impl Snake {
 
     pub fn update(&mut self) {
         let mut new_head = self.body[0].clone();
+
+        if self.body.len() > 1 {
+            let second_element = self.body[1].clone();
+            if new_head == second_element {
+                return;
+            }
+        }
+
         match self.direction {
             Direction::Up => new_head.y -= 1,
             Direction::Down => new_head.y += 1,
             Direction::Left => new_head.x -= 1,
             Direction::Right => new_head.x += 1,
         }
-        self.body.insert(0, new_head); // Add new head to the front
-        self.body.pop(); // Remove the last part to simulate movement
+
+        self.body.insert(0, new_head);        
+        self.body.pop();
     }
 
     pub fn render(&self) -> String {
