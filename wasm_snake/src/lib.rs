@@ -22,14 +22,12 @@ impl std::fmt::Display for Position {
     }
 }
 
-// The Snake struct will represent snake in the game
 #[wasm_bindgen]
 pub struct Snake {
-    body: Vec<Position>,    // Vector of positions that make up the snake's body
-    direction: Direction,   // The direction the snake is moving
+    body: Vec<Position>,
+    direction: Direction,
 }
 
-// Methods for the Snake struct
 #[wasm_bindgen]
 impl Snake {
     pub fn new() -> Snake {
@@ -47,7 +45,6 @@ impl Snake {
         self.direction = direction;
     }
 
-    // Update the snake's position
     pub fn update(&mut self) {
         let mut new_head = self.body[0].clone();
         match self.direction {
@@ -60,7 +57,6 @@ impl Snake {
         self.body.pop(); // Remove the last part to simulate movement
     }
 
-    // Method to render the snake's body as a string
     pub fn render(&self) -> String {
         self.body
             .iter()
@@ -78,7 +74,6 @@ impl Snake {
     }
 }
 
-// Represents the possible directions the snake can move
 #[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub enum Direction {
