@@ -11,16 +11,24 @@ async function run() {
     document.addEventListener('keydown', (event: KeyboardEvent) => {
         switch (event.key) {
             case 'ArrowUp':
-                snake.change_direction(Direction.Up);
+                if (snake.get_direction() !== Direction.Down) {
+                    snake.change_direction(Direction.Up);
+                }
                 break;
             case 'ArrowDown':
-                snake.change_direction(Direction.Down);
+                if (snake.get_direction() !== Direction.Up) {
+                    snake.change_direction(Direction.Down);
+                }
                 break;
             case 'ArrowLeft':
-                snake.change_direction(Direction.Left);
+                if (snake.get_direction() !== Direction.Right) {
+                    snake.change_direction(Direction.Left);
+                }
                 break;
             case 'ArrowRight':
-                snake.change_direction(Direction.Right);
+                if (snake.get_direction() !== Direction.Left) {
+                    snake.change_direction(Direction.Right);
+                }
                 break;
         }
         console.log('Direction changed:', snake.get_direction());
@@ -44,9 +52,35 @@ async function run() {
         });
     }
 
+    function checkCollision(): boolean {
+        const snakeBody = snake.render().split("), (");
+        const head = snakeBody[0].replace(/[()]/g, '').split(', ').map(Number);
+        const [headX, headY] = head;
+
+        if (headX < 0 || headY < 0 || headX >= canvas.width / 20 || headY >= canvas.height / 20) {
+            return true;
+        }
+
+        for (let i = 1; i < snakeBody.length; i++) {
+            const part = snakeBody[i].replace(/[()]/g, '').split(', ').map(Number);
+            const [partX, partY] = part;
+            if (headX === partX && headY === partY) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     function update() {
         snake.update();
         console.log('Snake updated:', snake.render());
+
+        if (checkCollision()) {
+            console.log('Game Over');
+            return;
+        }
+
         draw();
         setTimeout(update, 500);
     }

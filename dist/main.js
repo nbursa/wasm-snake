@@ -38,28 +38,48 @@ import init, { Snake, Direction } from '../wasm_snake/pkg/wasm_snake.js';
 function run() {
     return __awaiter(this, void 0, void 0, function () {
         function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             var snakeBody = snake.render().split("), (");
             console.log('Drawing snake body:', snakeBody);
             snakeBody.forEach(function (part) {
                 var cleanedPart = part.replace(/[()]/g, '').split(', ');
                 var x = parseInt(cleanedPart[0]);
                 var y = parseInt(cleanedPart[1]);
-                console.log("Drawing part at (".concat(x, ", ").concat(y, ")")); // Log each part's position
+                console.log("Drawing part at (".concat(x, ", ").concat(y, ")"));
                 if (!isNaN(x) && !isNaN(y)) {
                     ctx.fillStyle = "lime";
-                    ctx.fillRect(x * 20, y * 20, 20, 20); // Draw each part of the snake
+                    ctx.fillRect(x * 20, y * 20, 20, 20);
                 }
                 else {
                     console.error("Invalid coordinates (".concat(x, ", ").concat(y, ")"));
                 }
             });
         }
+        function checkCollision() {
+            var snakeBody = snake.render().split("), (");
+            var head = snakeBody[0].replace(/[()]/g, '').split(', ').map(Number);
+            var headX = head[0], headY = head[1];
+            if (headX < 0 || headY < 0 || headX >= canvas.width / 20 || headY >= canvas.height / 20) {
+                return true;
+            }
+            for (var i = 1; i < snakeBody.length; i++) {
+                var part = snakeBody[i].replace(/[()]/g, '').split(', ').map(Number);
+                var partX = part[0], partY = part[1];
+                if (headX === partX && headY === partY) {
+                    return true;
+                }
+            }
+            return false;
+        }
         function update() {
             snake.update();
             console.log('Snake updated:', snake.render());
+            if (checkCollision()) {
+                console.log('Game Over');
+                return;
+            }
             draw();
-            setTimeout(update, 500); // Update the snake's position every 500ms
+            setTimeout(update, 500);
         }
         var snake, canvas, ctx;
         return __generator(this, function (_a) {
@@ -74,22 +94,30 @@ function run() {
                     document.addEventListener('keydown', function (event) {
                         switch (event.key) {
                             case 'ArrowUp':
-                                snake.change_direction(Direction.Up);
+                                if (snake.get_direction() !== Direction.Down) {
+                                    snake.change_direction(Direction.Up);
+                                }
                                 break;
                             case 'ArrowDown':
-                                snake.change_direction(Direction.Down);
+                                if (snake.get_direction() !== Direction.Up) {
+                                    snake.change_direction(Direction.Down);
+                                }
                                 break;
                             case 'ArrowLeft':
-                                snake.change_direction(Direction.Left);
+                                if (snake.get_direction() !== Direction.Right) {
+                                    snake.change_direction(Direction.Left);
+                                }
                                 break;
                             case 'ArrowRight':
-                                snake.change_direction(Direction.Right);
+                                if (snake.get_direction() !== Direction.Left) {
+                                    snake.change_direction(Direction.Right);
+                                }
                                 break;
                         }
                         console.log('Direction changed:', snake.get_direction());
                     });
-                    draw(); // Initial draw
-                    update(); // Start the update loop
+                    draw();
+                    update();
                     return [2 /*return*/];
             }
         });
