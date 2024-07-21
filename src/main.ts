@@ -3,6 +3,7 @@ import init, { Snake, Direction } from '../wasm_snake/pkg/wasm_snake.js';
 async function run() {
     await init();
     const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
+    const gameStatus = document.getElementById("gameStatus") as HTMLHeadingElement;
     const ctx = canvas.getContext("2d")!;
     const snake = Snake.new(canvas.width / 20, canvas.height / 20);
 
@@ -49,11 +50,16 @@ async function run() {
         });
     }
 
+    function setStatus(newStatus: string) {
+	gameStatus.textContent = newStatus;
+    }
+
     function update() {
         snake.update();
+        setStatus("Snaking");
 
         if (snake.check_collision()) {
-            console.log('Game Over');
+	    setStatus("Game Over");
             return;
         }
 
