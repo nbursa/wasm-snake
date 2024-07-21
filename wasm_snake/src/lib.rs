@@ -1,6 +1,5 @@
 use wasm_bindgen::prelude::*;
 
-// Represents a position on the game board
 #[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub struct Position {
