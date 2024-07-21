@@ -2,19 +2,13 @@
 <html>
 <head>
     <title>Wasm Snake Game</title>
+    <style>
+        canvas { background: #000; display: block; margin: 0 auto; }
+    </style>
 </head>
 <body>
-    <h1 id="greeting"></h1>
-    <script type="module">
-        import init, { greet } from './wasm_snake/pkg/wasm_snake.js';
-
-        async function run() {
-            await init();
-            document.getElementById('greeting').innerText = greet();
-        }
-
-        run();
-    </script>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <script type="module" src="./dist/main.js"></script>
 </body>
 </html>
 
