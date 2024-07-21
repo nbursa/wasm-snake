@@ -14,7 +14,6 @@ impl Position {
     }
 }
 
-// Implement the Display trait to print the position
 impl std::fmt::Display for Position {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "({}, {})", self.x, self.y)
@@ -84,7 +83,7 @@ impl Snake {
             return true;
         }
 
-        // Check for self-collisions
+        // Check for self collisions
         for part in &self.body[1..] {
             if head == *part {
                 return true;
