@@ -2,10 +2,11 @@
   "name": "wasm-snake",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "start": "lite-server",
     "build": "tsc",
+    "build-wasm": "wasm-pack build --target web",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
