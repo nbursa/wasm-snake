@@ -39,15 +39,25 @@ function run() {
     return __awaiter(this, void 0, void 0, function () {
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-            var snakeBody = snake.render().split(", ");
+            var snakeBody = snake.render().split("), (");
+            console.log('Drawing snake body:', snakeBody);
             snakeBody.forEach(function (part) {
-                var _a = part.slice(1, -1).split(", ").map(Number), x = _a[0], y = _a[1];
-                ctx.fillStyle = "lime";
-                ctx.fillRect(x * 20, y * 20, 20, 20); // Draw each part of the snake
+                var cleanedPart = part.replace(/[()]/g, '').split(', ');
+                var x = parseInt(cleanedPart[0]);
+                var y = parseInt(cleanedPart[1]);
+                console.log("Drawing part at (".concat(x, ", ").concat(y, ")")); // Log each part's position
+                if (!isNaN(x) && !isNaN(y)) {
+                    ctx.fillStyle = "lime";
+                    ctx.fillRect(x * 20, y * 20, 20, 20); // Draw each part of the snake
+                }
+                else {
+                    console.error("Invalid coordinates (".concat(x, ", ").concat(y, ")"));
+                }
             });
         }
         function update() {
             snake.update();
+            console.log('Snake updated:', snake.render());
             draw();
             setTimeout(update, 500); // Update the snake's position every 500ms
         }
@@ -60,6 +70,7 @@ function run() {
                     snake = Snake.new();
                     canvas = document.getElementById("gameCanvas");
                     ctx = canvas.getContext("2d");
+                    console.log('Snake initialized:', snake.render());
                     document.addEventListener('keydown', function (event) {
                         switch (event.key) {
                             case 'ArrowUp':
@@ -75,7 +86,9 @@ function run() {
                                 snake.change_direction(Direction.Right);
                                 break;
                         }
+                        console.log('Direction changed:', snake.get_direction());
                     });
+                    draw(); // Initial draw
                     update(); // Start the update loop
                     return [2 /*return*/];
             }

@@ -6,6 +6,8 @@ async function run() {
     const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
     const ctx = canvas.getContext("2d")!;
 
+    console.log('Snake initialized:', snake.render());
+
     document.addEventListener('keydown', (event: KeyboardEvent) => {
         switch (event.key) {
             case 'ArrowUp':
@@ -21,25 +23,36 @@ async function run() {
                 snake.change_direction(Direction.Right);
                 break;
         }
+        console.log('Direction changed:', snake.get_direction());
     });
 
     function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-        const snakeBody = snake.render().split(", ");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const snakeBody = snake.render().split("), (");
+        console.log('Drawing snake body:', snakeBody);
         snakeBody.forEach((part: string) => {
-            const [x, y] = part.slice(1, -1).split(", ").map(Number);
-            ctx.fillStyle = "lime";
-            ctx.fillRect(x * 20, y * 20, 20, 20); // Draw each part of the snake
+            const cleanedPart = part.replace(/[()]/g, '').split(', ');
+            const x = parseInt(cleanedPart[0]);
+            const y = parseInt(cleanedPart[1]);
+            console.log(`Drawing part at (${x}, ${y})`);
+            if (!isNaN(x) && !isNaN(y)) {
+                ctx.fillStyle = "lime";
+                ctx.fillRect(x * 20, y * 20, 20, 20);
+            } else {
+                console.error(`Invalid coordinates (${x}, ${y})`);
+            }
         });
     }
 
     function update() {
         snake.update();
+        console.log('Snake updated:', snake.render());
         draw();
-        setTimeout(update, 500); // Update the snake's position every 500ms
+        setTimeout(update, 500);
     }
 
-    update(); // Start the update loop
+    draw();
+    update();
 }
 
 run();
