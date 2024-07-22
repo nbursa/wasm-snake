@@ -37,17 +37,12 @@ async function run() {
         const snakeBody: WasmPosition[] = snake.get_body() as unknown as WasmPosition[];
         const foods: WasmPosition[] = snake.get_foods() as unknown as WasmPosition[];
 
-        console.log("Snake Body:", snakeBody);
-        console.log("Foods:", foods);
-
         snakeBody.forEach((part: WasmPosition) => {
-            console.log(`Drawing snake part at (${part.x}, ${part.y})`);
             ctx.fillStyle = "lime";
             ctx.fillRect(part.x * 20, part.y * 20, 20, 20);
         });
 
         foods.forEach((food: WasmPosition) => {
-            console.log(`Drawing food at (${food.x}, ${food.y})`);
             ctx.fillStyle = "red";
             ctx.fillRect(food.x * 20, food.y * 20, 20, 20);
         });
