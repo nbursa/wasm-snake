@@ -1,4 +1,4 @@
-import init, { Snake, Direction } from '../wasm_snake/pkg/wasm_snake.js';
+import init, { Snake, Direction, Position as WasmPosition } from '../wasm_snake/pkg/wasm_snake.js';
 
 async function run() {
     await init();
@@ -34,32 +34,35 @@ async function run() {
 
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const snakeBody = snake.render().split("), (");
+        const snakeBody: WasmPosition[] = snake.get_body() as unknown as WasmPosition[];
+        const foods: WasmPosition[] = snake.get_foods() as unknown as WasmPosition[];
 
-        snakeBody.forEach((part: string) => {
-            const cleanedPart = part.replace(/[()]/g, '').split(', ');
-            const x = parseInt(cleanedPart[0]);
-            const y = parseInt(cleanedPart[1]);
+        console.log("Snake Body:", snakeBody);
+        console.log("Foods:", foods);
 
-            if (!isNaN(x) && !isNaN(y)) {
-                ctx.fillStyle = "lime";
-                ctx.fillRect(x * 20, y * 20, 20, 20);
-            } else {
-                console.error(`Invalid coordinates (${x}, ${y})`);
-            }
+        snakeBody.forEach((part: WasmPosition) => {
+            console.log(`Drawing snake part at (${part.x}, ${part.y})`);
+            ctx.fillStyle = "lime";
+            ctx.fillRect(part.x * 20, part.y * 20, 20, 20);
+        });
+
+        foods.forEach((food: WasmPosition) => {
+            console.log(`Drawing food at (${food.x}, ${food.y})`);
+            ctx.fillStyle = "red";
+            ctx.fillRect(food.x * 20, food.y * 20, 20, 20);
         });
     }
 
     function setStatus(newStatus: string) {
-	gameStatus.textContent = newStatus;
+        gameStatus.textContent = newStatus;
     }
 
     function update() {
         snake.update();
-        setStatus("Playing");
+        setStatus(`Playing - Level: ${snake.get_level()}`);
 
         if (snake.check_collision()) {
-	    setStatus("Game Over");
+            setStatus("Game Over");
             return;
         }
 

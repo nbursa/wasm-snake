@@ -1,4 +1,5 @@
 use wasm_bindgen::prelude::*;
+use js_sys;
 
 #[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, Debug)]
@@ -8,7 +9,36 @@ pub struct Position {
 }
 
 #[wasm_bindgen]
+pub struct Snake {
+    body: Vec<Position>,
+    direction: Direction,
+    width: i32,
+    height: i32,
+    level: i32,
+    foods: Vec<Position>,
+}
+
+#[wasm_bindgen]
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub enum Direction {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
+#[wasm_bindgen]
 impl Position {
+    #[wasm_bindgen(getter)]
+    pub fn x(&self) -> i32 {
+        self.x
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn y(&self) -> i32 {
+        self.y
+    }
+
     pub fn new(x: i32, y: i32) -> Position {
         Position { x, y }
     }
@@ -21,17 +51,9 @@ impl std::fmt::Display for Position {
 }
 
 #[wasm_bindgen]
-pub struct Snake {
-    body: Vec<Position>,
-    direction: Direction,
-    width: i32,
-    height: i32,
-}
-
-#[wasm_bindgen]
 impl Snake {
     pub fn new(width: i32, height: i32) -> Snake {
-        Snake {
+        let mut snake = Snake {
             body: vec![
                 Position::new(2, 2),
                 Position::new(2, 3),
@@ -40,6 +62,26 @@ impl Snake {
             direction: Direction::Right,
             width,
             height,
+            level: 1,
+            foods: Vec::new(),
+        };
+        snake.generate_foods();
+        snake
+    }
+
+    fn generate_foods(&mut self) {
+        self.foods.clear();
+        for _ in 0..self.level {
+            loop {
+                let new_food = Position::new(
+                    (js_sys::Math::random() * self.width as f64) as i32,
+                    (js_sys::Math::random() * self.height as f64) as i32,
+                );
+                if !self.body.contains(&new_food) && !self.foods.contains(&new_food) {
+                    self.foods.push(new_food);
+                    break;
+                }
+            }
         }
     }
 
@@ -64,20 +106,43 @@ impl Snake {
             Direction::Right => new_head.x += 1,
         }
 
-        self.body.insert(0, new_head);        
-        self.body.pop();
+        if self.foods.contains(&new_head) {
+            self.foods.retain(|&food| food != new_head);
+            self.body.insert(0, new_head.clone());
+            if self.foods.is_empty() {
+                self.level += 1;
+                self.generate_foods();
+            }
+        } else {
+            self.body.insert(0, new_head);        
+            self.body.pop();
+        }
     }
 
     pub fn render(&self) -> String {
-        self.body
+        let snake_body = self.body
             .iter()
             .map(|pos| pos.to_string())
             .collect::<Vec<String>>()
-            .join(", ")
+            .join(", ");
+        let foods = self.foods
+            .iter()
+            .map(|pos| format!("food: {}", pos.to_string()))
+            .collect::<Vec<String>>()
+            .join(", ");
+        format!("Snake: [{}], Foods: [{}], Level: {}", snake_body, foods, self.level)
     }
 
     pub fn get_body(&self) -> Vec<Position> {
         self.body.clone()
+    }
+
+    pub fn get_foods(&self) -> Vec<Position> {
+        self.foods.clone()
+    }
+
+    pub fn get_level(&self) -> i32 {
+        self.level
     }
 
     pub fn get_direction(&self) -> Direction {
@@ -101,14 +166,5 @@ impl Snake {
 
         false
     }
-}
-
-#[wasm_bindgen]
-#[derive(Clone, Copy, PartialEq, Debug)]
-pub enum Direction {
-    Up,
-    Down,
-    Left,
-    Right,
 }
 
