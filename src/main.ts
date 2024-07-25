@@ -62,7 +62,7 @@ async function run() {
         }
 
         draw();
-        setTimeout(update, 500);
+        requestAnimationFrame(update);
     }
 
     draw();
