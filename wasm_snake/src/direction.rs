@@ -1,6 +1,6 @@
-use wasm_bindgen::preude::*;
+use wasm_bindgen::prelude::*;
 
-#[wasm_bingen]
+#[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub enum Direction {
 	Up,

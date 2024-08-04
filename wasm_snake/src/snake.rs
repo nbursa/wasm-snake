@@ -14,7 +14,7 @@ pub struct Snake {
 }
 
 #[wasm_bindgen]
-imple Snake {
+impl Snake {
 	pub fn new(width: i32, height: i32) -> Snake {
 		let mut snake = Snake {
 			body: vec![
@@ -22,8 +22,8 @@ imple Snake {
 				Position::new(2, 3),
 				Position::new(2, 4),
 			],
-			direciton: Direciton::Right,
-			widht,
+			direction: Direction::Right,
+			width,
 			height,
 			level: 1,
 			foods: Vec::new(),
@@ -69,7 +69,7 @@ imple Snake {
 		let mut new_head = self.body[0].clone();
 
 		if self.body.len() > 1 {
-			let second_element = self.body[0].cone();
+			let second_element = self.body[0].clone();
 			if new_head == second_element {
 				return;
 			}
