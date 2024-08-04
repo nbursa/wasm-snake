@@ -10,19 +10,9 @@ pub struct Position {
 
 #[wasm_bindgen]
 impl Position {
-	#[wasm_bindgen(getter)]
-	pub fn x(&self) -> i32 {
-		self.x
-	}
-	
-	#[wasm_bindgen]
-	pub fn y(&self) -> i32 {
-		self.y
-	}
-
-	pub fn new(x: i32, y: i32) -> Position {
-		Position { x, y }
-	}
+    pub fn new(x: i32, y: i32) -> Position {
+        Position { x, y }
+    }
 }
 
 impl fmt::Display for Position {
