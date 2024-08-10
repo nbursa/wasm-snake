@@ -6,7 +6,7 @@ async function run() {
     const gameStatus = document.getElementById("gameStatus") as HTMLHeadingElement;
     const ctx = canvas.getContext("2d")!;
     const snake = Snake.new(canvas.width / 20, canvas.height / 20);
-    let snakeSpeed = 1000;
+    let snakeSpeed = 500;
 
     document.addEventListener('keydown', (event: KeyboardEvent) => {
         switch (event.key) {
