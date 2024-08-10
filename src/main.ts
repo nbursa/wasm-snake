@@ -6,6 +6,7 @@ async function run() {
     const gameStatus = document.getElementById("gameStatus") as HTMLHeadingElement;
     const ctx = canvas.getContext("2d")!;
     const snake = Snake.new(canvas.width / 20, canvas.height / 20);
+    let snakeSpeed = 1000;
 
     document.addEventListener('keydown', (event: KeyboardEvent) => {
         switch (event.key) {
@@ -62,11 +63,14 @@ async function run() {
         }
 
         draw();
-        requestAnimationFrame(update);
     }
 
-    draw();
-    update();
+    function gameLoop() {
+        update();
+        setTimeout(gameLoop, snakeSpeed);
+    }
+
+    gameLoop();
 }
 
 run();

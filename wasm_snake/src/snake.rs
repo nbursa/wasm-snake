@@ -68,13 +68,6 @@ impl Snake {
 	pub fn update(&mut self) {
 		let mut new_head = self.body[0].clone();
 
-		if self.body.len() > 1 {
-			let second_element = self.body[0].clone();
-			if new_head == second_element {
-				return;
-			}
-		}
-
 		match self.direction {
 			Direction::Up => new_head.y -= 1,
 			Direction::Down => new_head.y += 1,
